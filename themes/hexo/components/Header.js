@@ -1,3 +1,5 @@
+import BLOG from '@/blog.config'
+import { useGlobal } from '@/lib/global'
 import { useEffect, useState } from 'react'
 import Typed from 'typed.js'
 import CONFIG_HEXO from '../config_hexo'
@@ -10,12 +12,14 @@ let autoScroll = false
  *
  * @returns 头图
  */
-const Header = props => {
+export default function Header () {
   const [typed, changeType] = useState()
-  const { siteInfo } = props
+  const { isDarkMode } = useGlobal()
+
   useEffect(() => {
     scrollTrigger()
     updateHeaderHeight()
+    updateTopNav()
     if (!typed && window && document.getElementById('typed')) {
       changeType(
         new Typed('#typed', {
@@ -45,6 +49,15 @@ const Header = props => {
 
   const scrollTrigger = () => {
     const scrollS = window.scrollY
+    const nav = document.querySelector('#sticky-nav')
+
+    if (scrollS < 500) {
+      nav && nav.classList.replace('bg-white', 'bg-none')
+      nav && nav.classList.replace('text-black', 'text-white')
+    } else {
+      nav && nav.classList.replace('bg-none', 'bg-white')
+      nav && nav.classList.replace('text-white', 'text-black')
+    }
 
     // 自动滚动
     if ((scrollS > windowTop) & (scrollS < window.innerHeight) && !autoScroll
@@ -59,12 +72,27 @@ const Header = props => {
       setTimeout(autoScrollEnd, 500)
     }
     windowTop = scrollS
+
+    updateTopNav()
+  }
+
+  const updateTopNav = () => {
+    if (!isDarkMode) {
+      const stickyNavElement = document.getElementById('sticky-nav')
+      if (window.scrollY < window.innerHeight) {
+        stickyNavElement?.classList?.add('dark')
+      } else {
+        stickyNavElement?.classList?.remove('dark')
+      }
+    }
   }
 
   function updateHeaderHeight () {
     setTimeout(() => {
-      const wrapperElement = document.getElementById('wrapper')
-      wrapperTop = wrapperElement?.offsetTop
+      if (window) {
+        const wrapperElement = document.getElementById('wrapper')
+        wrapperTop = wrapperElement?.offsetTop
+      }
     }, 500)
   }
 
@@ -74,11 +102,11 @@ const Header = props => {
       className="duration-500 md:bg-fixed w-full bg-cover bg-center h-screen bg-black text-white"
       style={{
         backgroundImage:
-          `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0,0,0,0.2), rgba(0,0,0,0.2), rgba(0,0,0,0.2), rgba(0, 0, 0, 0.8) ),url("${siteInfo?.pageCover}")`
+          `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0,0,0,0.2), rgba(0, 0, 0, 0.8) ),url("${CONFIG_HEXO.HOME_BANNER_IMAGE}")`
       }}
     >
       <div className="absolute flex flex-col h-full items-center justify-center w-full font-sans">
-        <div className='text-4xl md:text-5xl text-white shadow-text'>{siteInfo?.title}</div>
+        <div className='text-4xl md:text-5xl text-white shadow-text'>{BLOG.TITLE}</div>
         <div className='mt-2 h-12 items-center text-center shadow-text text-white text-lg'>
           <span id='typed'/>
         </div>
@@ -94,5 +122,3 @@ const Header = props => {
     </header>
   )
 }
-
-export default Header

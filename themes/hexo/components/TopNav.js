@@ -7,9 +7,9 @@ import Collapse from './Collapse'
 import Logo from './Logo'
 import SearchDrawer from './SearchDrawer'
 import TagGroups from './TagGroups'
+import CONFIG_HEXO from '../config_hexo'
 import MenuButtonGroupTop from './MenuButtonGroupTop'
 import MenuList from './MenuList'
-import { useRouter } from 'next/router'
 
 let windowTop = 0
 
@@ -18,31 +18,16 @@ let windowTop = 0
  * @param {*} param0
  * @returns
  */
-const TopNav = props => {
+const TopNav = (props) => {
   const { tags, currentTag, categories, currentCategory } = props
   const { locale } = useGlobal()
   const searchDrawer = useRef()
-  const { isDarkMode } = useGlobal()
-  const router = useRouter()
 
   const scrollTrigger = throttle(() => {
     const scrollS = window.scrollY
     const nav = document.querySelector('#sticky-nav')
     const header = document.querySelector('#header')
     const showNav = scrollS <= windowTop || scrollS < 5 || (header && scrollS <= header.clientHeight)// 非首页无大图时影藏顶部 滚动条置顶时隐藏
-    const navTransparent = (scrollS < document.documentElement.clientHeight - 12 && router.route === '/') || scrollS < 300 // 透明导航条的条件
-
-    if (header && navTransparent) {
-      nav && nav.classList.replace('bg-white', 'bg-none')
-      nav && nav.classList.replace('text-black', 'text-white')
-      nav && nav.classList.replace('border', 'border-transparent')
-      nav && nav.classList.replace('shadow-md', 'shadow-none')
-    } else {
-      nav && nav.classList.replace('bg-none', 'bg-white')
-      nav && nav.classList.replace('text-white', 'text-black')
-      nav && nav.classList.replace('border-transparent', 'border')
-      nav && nav.classList.replace('shadow-none', 'shadow-md')
-    }
 
     if (!showNav) {
       nav && nav.classList.replace('top-0', '-top-20')
@@ -51,28 +36,16 @@ const TopNav = props => {
       nav && nav.classList.replace('-top-20', 'top-0')
       windowTop = scrollS
     }
-    navDarkMode()
   }, 200)
-
-  const navDarkMode = () => {
-    const nav = document.getElementById('sticky-nav')
-    const header = document.querySelector('#header')
-    if (!isDarkMode && nav && header) {
-      if (window.scrollY < header.clientHeight) {
-        nav?.classList?.add('dark')
-      } else {
-        nav?.classList?.remove('dark')
-      }
-    }
-  }
 
   // 监听滚动
   useEffect(() => {
-    scrollTrigger()
-
-    window.addEventListener('scroll', scrollTrigger)
+    if (CONFIG_HEXO.NAV_TYPE === 'autoCollapse') {
+      // scrollTrigger()
+      window.addEventListener('scroll', scrollTrigger)
+    }
     return () => {
-      window.removeEventListener('scroll', scrollTrigger)
+      CONFIG_HEXO.NAV_TYPE === 'autoCollapse' && window.removeEventListener('scroll', scrollTrigger)
     }
   }, [])
 
@@ -118,14 +91,14 @@ const TopNav = props => {
     <SearchDrawer cRef={searchDrawer} slot={searchDrawerSlot}/>
 
     {/* 导航栏 */}
-    <div id='sticky-nav' className={'top-0 shadow-md fixed bg-none animate__animated animate__fadeIn dark:bg-hexo-black-gray dark:text-gray-200 text-black w-full z-20 transform duration-200 font-san border-transparent  dark:border-transparent'}>
-      <div className='w-full flex justify-between items-center px-4 py-2'>
+    <div id='sticky-nav' className={`${CONFIG_HEXO.NAV_TYPE !== 'normal' ? 'fixed bg-white' : ' bg-none -mb-10'} animate__animated animate__fadeIn dark:bg-black dark:bg-opacity-50 dark:text-gray-200 bg-opacity-80 text-black w-full top-0 z-20 transform duration-200 font-sans`}>
+      <div className='w-full flex justify-between items-center px-4 py-4 shadow'>
         <div className='flex'>
-         <Logo {...props}/>
+         <Logo/>
         </div>
 
         {/* 右侧功能 */}
-        <div className='mr-1 justify-end items-center font-serif'>
+        <div className='mr-1 justify-end items-center space-x-4 font-serif'>
           <div className='hidden lg:flex'> <MenuButtonGroupTop {...props}/></div>
           <div onClick={toggleMenuOpen} className='w-8 justify-center items-center h-8 cursor-pointer flex lg:hidden'>
           { isOpen ? <i className='fas fa-times'/> : <i className='fas fa-bars'/> }
@@ -133,8 +106,8 @@ const TopNav = props => {
         </div>
       </div>
 
-      <Collapse type='vertical' isOpen={isOpen} className='shadow-xl'>
-        <div className='bg-white dark:bg-hexo-black-gray pt-1 py-2 px-5 lg:hidden '>
+      <Collapse isOpen={isOpen} className='shadow-xl'>
+        <div className='bg-white pt-1 py-2 px-5 lg:hidden'>
           <MenuList {...props}/>
         </div>
       </Collapse>
