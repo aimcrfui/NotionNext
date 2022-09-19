@@ -9,16 +9,14 @@ const BlogPostCard = ({ post, showSummary }) => {
   const showPreview = CONFIG_HEXO.POST_LIST_PREVIEW && post.blockMap
   return (
     <div className="w-full shadow-sm hover:shadow border dark:border-black rounded-xl bg-white dark:bg-hexo-black-gray duration-300">
-      <div
-        key={post.id}
-        className="animate__animated animate__fadeIn flex flex-col-reverse lg:flex-row justify-between duration-300"
-      >
+    
+      <div key={post.id} className='animate__animated animate__fadeIn flex flex-col-reverse lg:flex-row justify-between duration-300'>
+      
         <div className="lg:p-8 p-4 flex flex-col w-full">
           <Link href={`${BLOG.SUB_PATH}/article/${post.slug}`} passHref>
-            <a
-              className={`replace cursor-pointer hover:underline text-2xl font-sans ${showPreview ? 'text-center' : ''
-                } leading-tight text-gray-700 dark:text-gray-100 hover:text-indigo-700 dark:hover:text-indigo-400`}
-            >
+
+           <a className={`replace cursor-pointer hover:underline text-2xl font-sans ${showPreview ? 'text-center' : ''} leading-tight text-gray-700 dark:text-gray-100 hover:text-blue-500 dark:hover:text-blue-400`}>
+           
               {post.title}
             </a>
           </Link>
