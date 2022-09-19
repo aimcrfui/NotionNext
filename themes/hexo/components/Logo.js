@@ -6,7 +6,7 @@ const Logo = props => {
   const { siteInfo } = props
   return <Link href='/' passHref>
     <div className='flex flex-col justify-center items-center cursor-pointer space-y-3'>
-      <div className='font-sans text-lg p-1.5 rounded text-white'> {siteInfo?.title || BLOG.TITLE}</div>
+      <div className='font-sans text-lg p-1.5 rounded text-gray-400'> {siteInfo?.title || BLOG.TITLE}</div>
     </div>
   </Link>
 }
