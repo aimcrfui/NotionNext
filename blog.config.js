@@ -124,21 +124,21 @@ const BLOG = {
   // 无关紧要的配置
   // 自定义配置notion数据库字段名
   NOTION_PROPERTY_NAME: {
-    password: '密码',
-    type: '页面类型',
-    title: '标题',
-    status: '发布状态',
-    summary: '内容摘要',
-    slug: '文章短路径',
-    category: '文章分类',
-    date: '发布日期',
-    tags: '文章标签',
-    icon: '图标'
+    password: 'password',
+    type: 'type',
+    title: 'title',
+    status: 'status',
+    summary: 'summary',
+    slug: 'slug',
+    category: 'category',
+    date: 'date',
+    tags: 'tags',
+    icon: 'icon'
   },
-  AVATAR: '', // 作者头像，被notion中的ICON覆盖。如果没有ICON则取public目录下的avatar.png
-  TITLE: process.env.NEXT_PUBLIC_TITLE || '', // 站点标题 ，被notion中的页面标题覆盖
+  AVATAR: '/avatar.png', // 作者头像，被notion中的ICON覆盖。如果没有ICON则取public目录下的avatar.png
+  TITLE: process.env.NEXT_PUBLIC_TITLE || 'BLOG', // 站点标题 ，被notion中的页面标题覆盖
   DESCRIPTION:
-    process.env.NEXT_PUBLIC_DESCRIPTION || '', // 站点描述，被notion中的页面描述覆盖
+    process.env.NEXT_PUBLIC_DESCRIPTION || 'good', // 站点描述，被notion中的页面描述覆盖
 
   isProd: process.env.VERCEL_ENV === 'production', // distinguish between development and production environment (ref: https://vercel.com/docs/environment-variables#system-environment-variables)  isProd: process.env.VERCEL_ENV === 'production' // distinguish between development and production environment (ref: https://vercel.com/docs/environment-variables#system-environment-variables)
   VERSION: process.env.NEXT_PUBLIC_VERSION // 版本号
